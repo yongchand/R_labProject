@@ -1,0 +1,78 @@
+---
+title: "Simple"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readr)
+
+```
+
+```{r}
+real_data <- read_csv("~/CJ_Document/0717R.csv")
+View(real_data)
+total_data<-data.matrix(real_data)
+```
+
+```{r}
+csTime0<-total_data[1:5,2]
+csTime1<-total_data[6:10,2]
+csTime2<-total_data[11:15,2]
+csTime3<-total_data[16:20,2]
+csTime4<-total_data[21:25,2]
+csTime5<-total_data[26:30,2]
+
+name=c("0","10","20","30","40","50")
+
+cspredata <- data.frame(
+  name=rep(name,each=5),
+  value=c(csTime0,csTime1,csTime2,csTime3,csTime4,csTime5)
+)
+
+csdata <- data.frame(
+  name=c("0","10","20","30","40","50"),
+  value=c(mean(csTime0),mean(csTime1),mean(csTime2),mean(csTime3),mean(csTime4),mean(csTime5)),
+  sd=c(sd(csTime0)/sqrt(5),sd(csTime1)/sqrt(5),sd(csTime2)/sqrt(5),sd(csTime3)/sqrt(5),sd(csTime4)/sqrt(5),sd(csTime5)/sqrt(5))
+)
+
+ggplot(csdata) +
+  geom_bar( aes(x=name, y=value), stat="identity", fill="skyblue", alpha=0.5) +
+  geom_pointrange( aes(x=name, y=value, ymin=value-sd, ymax=value+sd), colour="orange", alpha=0.5, size=0.8)
+
+res.aov <- aov(value ~ name, data = cspredata)
+summary(res.aov)
+TukeyHSD(x=res.aov,'name',conf.level=0.95)
+
+```
+
+```{r}
+c1Time0<-total_data[1:5,3]
+c1Time1<-total_data[6:10,3]
+c1Time2<-total_data[11:15,3]
+c1Time3<-total_data[16:20,3]
+c1Time4<-total_data[21:25,3]
+c1Time5<-total_data[26:30,3]
+
+name=c("0","10","20","30","40","50")
+
+c1predata <- data.frame(
+  name=rep(name,each=5),
+  value=c(c1Time0,c1Time1,c1Time2,c1Time3,c1Time4,c1Time5)
+)
+
+c1data <- data.frame(
+  name=c("0","10","20","30","40","50"),
+  value=c(mean(c1Time0),mean(c1Time1),mean(c1Time2),mean(c1Time3),mean(c1Time4),mean(c1Time5)),
+  sd=c(sd(c1Time0)/sqrt(5),sd(c1Time1)/sqrt(5),sd(c1Time2)/sqrt(5),sd(c1Time3)/sqrt(5),sd(c1Time4)/sqrt(5),sd(c1Time5)/sqrt(5))
+)
+
+ggplot(c1data) +
+  geom_bar( aes(x=name, y=value), stat="identity", fill="skyblue", alpha=0.5) +
+  geom_pointrange( aes(x=name, y=value, ymin=value-sd, ymax=value+sd), colour="orange", alpha=0.5, size=0.8)
+
+tukeyone <- aov(value ~ name, data = c1predata)
+summary(tukeyone)
+TukeyHSD(x=tukeyone,'name',conf.level=0.95)
+
+```
